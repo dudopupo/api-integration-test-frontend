@@ -8,7 +8,7 @@ export const createSignature = (body: unknown, secretKey: string): string => {
 };
 
 export class BaseApi {
-  protected axiosInstance: AxiosInstance;
+  axiosInstance: AxiosInstance;
 
   constructor(baseURL: string, secretKey: string) {
     this.axiosInstance = axios.create({
@@ -16,7 +16,12 @@ export class BaseApi {
     });
 
     this.axiosInstance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-      const { userId } = useAuthStore.getState();
+      let { userId } = useAuthStore.getState();
+
+      if (!userId) {
+        userId = config.data?.userId;
+      }
+      
 
       if (config.data) {
         const signature = createSignature(config.data, secretKey);

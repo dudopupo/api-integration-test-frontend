@@ -1,8 +1,8 @@
 export default function Main() {
 
     return (
-      <div>
-        <h1 className="text-2xl font-bold">Main Page</h1>
-      </div>
+      <>
+        <h1 className="text-2xl font-bold ">Main PageMain PageMain PageMain PageMain PageMain PageMain PageMain PageMain PageMain PageMain PageMain PageMain Page</h1>
+      </>
     );
   }

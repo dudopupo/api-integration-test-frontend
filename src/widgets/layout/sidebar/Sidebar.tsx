@@ -34,6 +34,7 @@ export const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   const { logout } = useAuthStore();
+  
   useEffect(() => {
     if (!isMobile) {
       setOpen(false);
@@ -71,7 +72,7 @@ export const Sidebar = () => {
             style={{ 
               textDecoration: 'none', 
               color: 'inherit',
-              width: '100%', // Добавляем полную ширину для Link
+              width: '100%',
             }}
             >
             <ListItemButton 
