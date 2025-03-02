@@ -6,6 +6,11 @@ html {
   scroll-behavior: smooth;
 }
 
+html, body {
+  @apply h-screen w-screen;
+  margin: 0;
+}
+
 @media screen and (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
