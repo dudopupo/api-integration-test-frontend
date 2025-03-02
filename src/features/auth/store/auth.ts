@@ -5,9 +5,8 @@ import Cookies from "js-cookie";
 type AuthState = {
   userId: number | null;
   userName: string | null;
-  signature: string | null;
   isLogin: boolean;
-  login: (userId: number | null, userName: string | null, signature: string | null, isLogin: boolean) => void;
+  login: (userId: number | null, userName: string | null, isLogin: boolean) => void;
   logout: () => void;
 };
 
@@ -41,17 +40,14 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       userId: null,
       userName: null,
-      signature: null,
       isLogin: false,
-      login: (userId: number | null, userName: string | null, signature: string | null, isLogin: boolean): void => {
-        console.log('login', { userId, userName, signature, isLogin });
-        set({ userId, userName, signature, isLogin });
+      login: (userId: number | null, userName: string | null, isLogin: boolean): void => {
+        set({ userId, userName, isLogin });
       },
       logout: (): void => {
         set({ 
           userId: null, 
           userName: null, 
-          signature: null, 
           isLogin: false 
         });
 
@@ -64,7 +60,6 @@ export const useAuthStore = create<AuthState>()(
       partialize: (state: AuthState): AuthCookieData => ({
         userId: state.userId,
         userName: state.userName,
-        signature: state.signature,
         isLogin: state.isLogin,
       })
     }

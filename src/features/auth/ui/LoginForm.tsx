@@ -6,9 +6,8 @@ import { z } from "zod";
 import { TextField, Button, Box, Typography } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import { useAuthStore } from "@/features/auth/store/auth";
-import {apiClient} from "@/shared/api/api-client";
-import { createSignature } from "@/shared/lib";
 import { useRouter } from "next/navigation";
+import { API } from "@/shared/api/base-api";
 
 const schema = z.object({
   userId: z
@@ -20,7 +19,7 @@ const schema = z.object({
 
 type LoginFormInputs = z.infer<typeof schema>;
 
- export const LoginForm: React.FC = () => {
+export const LoginForm: React.FC = () => {
   const {
     register,
     handleSubmit,
@@ -31,44 +30,35 @@ type LoginFormInputs = z.infer<typeof schema>;
 
   const { login } = useAuthStore();
   const router = useRouter();
+  
   const mutation = useMutation({
     mutationFn: async (formData: LoginFormInputs) => {
       const userId = formData.userId;
-
       if (!userId) throw new Error("User ID is required");
+      console.log(formData)
 
-      const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY || "";
-      const requestBody = {};
-      const signature = createSignature({}, secretKey);
-
-      const response = await apiClient.post("/auth", requestBody, {
-        headers: {
-          "Content-Type": "application/json",
-          "x-signature": signature,
-          "user-id": userId,
-        },
-      });
-
+      // Используем новый API клиент
+      const response = await API.axiosInstance.post("/auth", formData);
+      
       const userName = response.data.username;
-      if ( userName && userId && signature) {
-        const isLogin = true
-        login(userId, userName, signature, isLogin);
+      if (userName && userId) {
+        login(userId, userName, true); 
       }
 
       return response.data;
     },
   });
 
-const onSubmit = async (data: LoginFormInputs) => {
-  try {
-    await mutation.mutateAsync(data);
-    setTimeout(() => {
-      router.push("/main");
-    }, 100);
-  } catch (error) {
-    console.error("Ошибка авторизации:", error);
-  }
-};
+  const onSubmit = async (data: LoginFormInputs) => {
+    try {
+      await mutation.mutateAsync(data);
+      setTimeout(() => {
+        router.push("/main");
+      }, 100);
+    } catch (error) {
+      console.error("Ошибка авторизации:", error);
+    }
+  };
 
   return (
     <Box

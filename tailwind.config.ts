@@ -8,15 +8,7 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx}",
     "./src/app/**/*.{ts,tsx}",
   ],
-  prefix: '',
   theme: {
-    container: {
-      center: true,
-      padding: '2rem',
-      screens: {
-        '2xl': '1400px',
-      },
-    },
     extend: {
       colors: {
         border: 'hsl(var(--border))',

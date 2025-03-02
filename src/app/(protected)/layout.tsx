@@ -6,39 +6,42 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
-  const { isLogin } = useAuthStore();
+  const { isLogin, userId, userName } = useAuthStore();
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
     const checkAuth = () => {
-      const state = useAuthStore.getState();
-      const isInitialized = state.userId !== null || state.userName !== null || state.signature !== null;
-      setIsLoading(!isInitialized);
+      const hasAuth = !!userId || !!userName;
+      setIsLoading(false);
+      if (!hasAuth && !isLogin) {
+        router.push('/login');
+      }
     };
 
     checkAuth();
-
+    
+    // Подписка на изменения хранилища
     const unsubscribe = useAuthStore.subscribe((state) => {
-      const initialized = state.userId !== null || state.userName !== null || state.signature !== null;
-      setIsLoading(!initialized);
+      const hasAuth = !!state.userId || !!state.userName;
+      if (!hasAuth && !state.isLogin) {
+        router.push('/login');
+      }
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [router, isLogin, userId, userName]);
 
-  useEffect(() => {    
-    if (isLoading && !isLogin) {
-      router.push('/login');
-    }
-  }, [isLoading, isLogin, router]);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <div style={{ display: 'flex' }}>
-      <Sidebar />
-      <main style={{ flexGrow: 1 }}>
-        {children}
-      </main>
-    </div>
+      <div>
+        <Sidebar />
+        <main>
+          {children}
+        </main>
+      </div>
   );
 }
