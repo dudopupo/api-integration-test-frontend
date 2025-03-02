@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuthStore } from '@/features/auth/store';
+import { Sidebar } from '@/widgets/layout/sidebar';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -32,5 +33,12 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
     }
   }, [isLoading, isLogin, router]);
 
-  return <>{children}</>;
+  return (
+    <div style={{ display: 'flex' }}>
+      <Sidebar />
+      <main style={{ flexGrow: 1 }}>
+        {children}
+      </main>
+    </div>
+  );
 }
