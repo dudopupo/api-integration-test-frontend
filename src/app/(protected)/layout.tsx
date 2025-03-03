@@ -1,36 +1,46 @@
 'use client';
 
 import { useAuthStore } from '@/features/auth/store';
+import { Sidebar } from '@/widgets/layout/sidebar';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
-  const { isLogin } = useAuthStore();
+  const { isLogin, userId, userName } = useAuthStore();
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
     const checkAuth = () => {
-      const state = useAuthStore.getState();
-      const isInitialized = state.userId !== null || state.userName !== null || state.signature !== null;
-      setIsLoading(!isInitialized);
+      const hasAuth = !!userId || !!userName;
+      setIsLoading(false);
+      if (!hasAuth && !isLogin) {
+        router.push('/login');
+      }
     };
 
     checkAuth();
 
     const unsubscribe = useAuthStore.subscribe((state) => {
-      const initialized = state.userId !== null || state.userName !== null || state.signature !== null;
-      setIsLoading(!initialized);
+      const hasAuth = !!state.userId || !!state.userName;
+      if (!hasAuth && !state.isLogin) {
+        router.push('/login');
+      }
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [router, isLogin, userId, userName]);
 
-  useEffect(() => {    
-    if (isLoading && !isLogin) {
-      router.push('/login');
-    }
-  }, [isLoading, isLogin, router]);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-  return <>{children}</>;
+  return (
+    <div className="flex min-h-screen">
+      <Sidebar />
+      <main className="flex-1 min-h-screen transition-margin">
+        {children}
+      </main>
+    </div>
+  );
 }

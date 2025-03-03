@@ -1,17 +1,22 @@
 import type { Config } from 'tailwindcss';
 
-const config = {
+const config: Config = {
   darkMode: "class",
   content: [
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/pages/**/*.{js,ts,jsx,tsx}",
     "./src/components/**/*.{js,ts,jsx,tsx}",
-    "./src/app/**/*.{ts,tsx, css}",
-    "./src/**/*.{ts,tsx}",
+    "./src/app/**/*.{ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'pending': '#ffb74d',
+        'win': '#81c784',
+        'lose': '#e57373'
+      }
+    },
   },
-  plugins: [],
 } satisfies Config;
 
 export default config;

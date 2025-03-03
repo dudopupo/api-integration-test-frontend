@@ -1,12 +1,15 @@
-'use client'
-import { useAuthStore } from "@/features/auth/store";
+'use client';
+
+import { Balance } from '@/features/balance/ui/Balance';
+import { Bet } from '@/features/bet/ui/Bet';
 
 export default function Main() {
-    const { logout } = useAuthStore()
-    return (
-      <div>
-        <h1 className="text-2xl font-bold">Main Page</h1>
-        <button onClick={logout}>Logout</button>
-      </div>
-    );
-  }
+
+  return (
+    <>
+        <Balance />
+        <Bet />
+    </>
+
+  );
+};
