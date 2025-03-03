@@ -11,7 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { z } from 'zod';
 import { API } from '@/shared/api/base-api';
-import { useNotificationStore } from '@/features/balance/store';
+import { useNotificationStore } from '@/features/notifycation/store';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 
@@ -44,29 +44,28 @@ export default function Main() {
   const { mutate: setBalance, isPending: isSetting } = useMutation({
     mutationFn: async (amount: number) =>  {
       const response = await API.axiosInstance.post('/balance', { balance: amount })
-      console.log(response);
       setUserBalance(response.data.balance)
       return response.data.balance
     },
         
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['balance'] });
       showNotification('Баланс успешно обновлен', 'success');
     },
-    onError: () => showNotification('Ошибка обновления баланса', 'error')
-  });
+    onError: (error) => {
+      showNotification((error as Error).message || 'Ошибка обновления баланса', 'error');
+  }});
 
   const { mutate: checkBalance } = useMutation({
     mutationFn: async () =>{ 
       const response = await API.axiosInstance.post('/check-balance', { expected_balance: userBalance })
-      console.log(response.data);
       return response.data.balance;
     },
     onSuccess: (data) => {
+      console.log("data");
+      showNotification("Проверка баланса осуществлена статус баланса актуален", "success");
       if (!data.data.isValid) {
         queryClient.invalidateQueries({ queryKey: ['balance'] });
       }
-      showNotification(data.data.message, data.data.isValid ? 'success' : 'error');
     }
   });
 

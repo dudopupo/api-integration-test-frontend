@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosInstance,  AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import CryptoJS from 'crypto-js';
 import { useAuthStore } from '@/features/auth/store/auth';
+import { useNotificationStore } from '@/features/notifycation/store';
 
 export const createSignature = (body: unknown, secretKey: string): string => {
   const payload = body ? JSON.stringify(body) : '{}';
@@ -41,6 +42,7 @@ export class BaseApi {
     this.axiosInstance.interceptors.response.use(
       (response: AxiosResponse) => response,
       (error) => {
+        console.log(error)
         this.handleError(error);
         return Promise.reject(error);
       }
@@ -48,10 +50,12 @@ export class BaseApi {
   }
 
   private handleError(error: AxiosError) {
+    const { showNotification } = useNotificationStore.getState();
     if (error.response) {
-      const { status } = error.response;
       const { logout } = useAuthStore.getState();
-
+      const { status, data } = error.response;
+      const message = data?.error || 'Произошла ошибка';
+      showNotification(message, 'error');
       switch (status) {
         case 401:
           console.log('Unauthorized: Access is denied due to invalid credentials.');
@@ -73,7 +77,7 @@ export class BaseApi {
           console.log('An unexpected error occurred:', error);
       }
     } else {
-      console.log('Network Error:', error);
+      showNotification('Ошибка сети', 'error');
     }
   }
 }
