@@ -29,7 +29,7 @@ export const cookieStorage: PersistStorage<AuthCookieData> = {
     try {
       Cookies.remove(name);
     } catch (error) {
-      console.error("Failed to remove cookie:", error);
+      console.log("Failed to remove cookie:", error);
     }
   },
 };

@@ -125,17 +125,17 @@ export const Sidebar = () => {
       <CssBaseline />
       <AppBar 
         position="fixed" 
-        sx={{ 
-          display: { xs: 'flex', md: 'none' },
-          left: 'auto',
-          right: 0,
-          width: '100%',
-          bgcolor: 'background.paper',
-          color: 'text.primary',
-          boxShadow: 1,
-          zIndex: theme.zIndex.drawer + 1
-        }}
-      >
+            sx={{
+                zIndex: theme.zIndex.drawer + 1,
+                display: { xs: 'flex', md: 'none' },
+                left: 'auto',
+                right: 0,
+                width: '100%',
+                bgcolor: 'background.paper',
+                color: 'text.primary',
+                boxShadow: 1,
+              }}
+        >
         <Toolbar>
           <IconButton
             color="inherit"
@@ -169,18 +169,26 @@ export const Sidebar = () => {
 
       {/* Десктопная версия */}
       <Drawer
-        variant="permanent"
-        sx={{
-          display: { xs: 'none', md: 'block' },
-          '& .MuiDrawer-paper': {
-            width: collapsed ? collapsedWidth : drawerWidth,
-            transition: theme.transitions.create('width', {
-              easing: theme.transitions.easing.sharp,
-              duration: theme.transitions.duration.leavingScreen,
-            }),
-          },
-        }}
-      >
+  variant="permanent"
+  sx={{
+    display: { xs: 'none', md: 'block' },
+    width: collapsed ? collapsedWidth : drawerWidth,
+    flexShrink: 0,
+    '& .MuiDrawer-paper': {
+      width: collapsed ? collapsedWidth : drawerWidth,
+      position: 'relative',
+      height: '100vh', // Фиксируем высоту
+      overflowX: 'hidden',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between', // Распределяем контент
+      transition: theme.transitions.create('width', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+      }),
+    },
+  }}
+>
         {drawerContent}
       </Drawer>
     </>

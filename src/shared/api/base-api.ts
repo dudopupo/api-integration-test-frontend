@@ -17,6 +17,8 @@ export class BaseApi {
 
     this.axiosInstance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
       let { userId } = useAuthStore.getState();
+      console.log(userId);
+      
 
       if (!userId) {
         userId = config.data?.userId;
@@ -52,26 +54,26 @@ export class BaseApi {
 
       switch (status) {
         case 401:
-          console.error('Unauthorized: Access is denied due to invalid credentials.');
+          console.log('Unauthorized: Access is denied due to invalid credentials.');
           logout();
           break;
         case 403:
-          console.error('Forbidden: You do not have permission to access this resource.');
+          console.log('Forbidden: You do not have permission to access this resource.');
           break;
         case 404:
-          console.error('Not Found: The requested resource could not be found.');
+          console.log('Not Found: The requested resource could not be found.');
           break;
         case 429:
-          console.error('Too Many Requests: You have exceeded the rate limit.');
+          console.log('Too Many Requests: You have exceeded the rate limit.');
           break;
         case 500:
-          console.error('Internal Server Error: An error occurred on the server.');
+          console.log('Internal Server Error: An error occurred on the server.');
           break;
         default:
-          console.error('An unexpected error occurred:', error.message);
+          console.log('An unexpected error occurred:', error);
       }
     } else {
-      console.error('Network Error:', error.message);
+      console.log('Network Error:', error);
     }
   }
 }

@@ -35,9 +35,7 @@ export const LoginForm: React.FC = () => {
     mutationFn: async (formData: LoginFormInputs) => {
       const userId = formData.userId;
       if (!userId) throw new Error("User ID is required");
-      console.log(formData)
 
-      // Используем новый API клиент
       const response = await API.axiosInstance.post("/auth", formData);
       
       const userName = response.data.username;
@@ -56,7 +54,7 @@ export const LoginForm: React.FC = () => {
         router.push("/main");
       }, 100);
     } catch (error) {
-      console.error("Ошибка авторизации:", error);
+      console.log("Ошибка авторизации:", error);
     }
   };
 
