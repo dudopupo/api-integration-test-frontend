@@ -17,21 +17,13 @@ export class BaseApi {
     });
 
     this.axiosInstance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-      let { userId } = useAuthStore.getState();
-      console.log(userId);
-      
-
-      if (!userId) {
-        userId = config.data?.userId;
-      }
-      
-
-      if (config.data) {
-        const signature = createSignature(config.data, secretKey);
-        
+      const { userId } = useAuthStore.getState();
+      if (userId) {
         config.headers['user-id'] = userId;
-        config.headers['x-signature'] = signature;
       }
+        const signature = createSignature(config.data, secretKey);
+        config.headers['x-signature'] = signature;
+
 
       return config;
     }, (error) => {
@@ -49,12 +41,12 @@ export class BaseApi {
     );
   }
 
-  private handleError(error: AxiosError) {
+  private handleError(error: AxiosError<{ error: string }>): void {
     const { showNotification } = useNotificationStore.getState();
     if (error.response) {
       const { logout } = useAuthStore.getState();
       const { status, data } = error.response;
-      const message = data?.error || 'Произошла ошибка';
+      const message: string = data?.error || 'Произошла ошибка';
       showNotification(message, 'error');
       switch (status) {
         case 401:
