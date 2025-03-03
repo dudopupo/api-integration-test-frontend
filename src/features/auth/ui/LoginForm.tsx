@@ -8,6 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useAuthStore } from "@/features/auth/store/auth";
 import { useRouter } from "next/navigation";
 import { API } from "@/shared/api/base-api";
+import { useNotificationStore } from '@/features/notifycation/store';
 
 const schema = z.object({
   userId: z
@@ -29,6 +30,7 @@ export const LoginForm: React.FC = () => {
   });
 
   const { login } = useAuthStore();
+  const { showNotification } = useNotificationStore()
   const router = useRouter();
   
   const mutation = useMutation({
@@ -40,7 +42,8 @@ export const LoginForm: React.FC = () => {
       
       const userName = response.data.username;
       if (userName && userId) {
-        login(userId, userName, true); 
+        login(userId, userName, true);
+        showNotification('Успешный вход', 'success');
       }
 
       return response.data;
